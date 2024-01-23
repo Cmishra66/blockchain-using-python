@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Frontend</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 50px;
+            color: #333;
+            background: linear-gradient(to bottom, #f0f8ff, #dbe5e5);
+        }
+        h1 {
+            color: #007bff;
+            margin-bottom: 30px;
+        }
+        button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 18px;
+            background: linear-gradient(to right, #007bff, #0056b3);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            background: linear-gradient(to right, #0056b3, #004080);
+            transform: scale(1.05);
+        }
+        #message {
+            margin-top: 30px;
+            padding: 30px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Blockchain Frontend</h1>
+    
+    <button onclick="mineBlock()">Mine Block</button>
+    <button onclick="displayChain()">Display Chain</button>
+    <button onclick="checkValidity()">Check Validity</button>
+
+    <div id="message"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        function makeRequest(endpoint, callback) {
+            $.ajax({
+                url: `http://127.0.0.1:5000/${endpoint}`,
+                type: 'GET',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function(data) {
+                    callback(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    displayError(`Error: ${status}`);
+                }
+            });
+        }
+
+        function mineBlock() {
+            makeRequest('mine_block', function(response) {
+                displayResponse(response);
+            });
+        }
+
+        function displayChain() {
+            makeRequest('get_chain', function(response) {
+                displayResponse(response);
+            });
+        }
+
+        function checkValidity() {
+            makeRequest('valid', function(response) {
+                displayResponse(response);
+            });
+        }
+
+        function displayResponse(response) {
+            $('#message').html('<pre>' + JSON.stringify(response, null, 2) + '</pre>');
+        }
+
+        function displayError(errorMessage) {
+            $('#message').html(`<p style="color: red;">${errorMessage}</p>`);
+        }
+    </script>
+</body>
+</html>
